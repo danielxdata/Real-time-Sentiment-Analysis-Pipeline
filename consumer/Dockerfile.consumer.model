@@ -1,0 +1,19 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY consumer/requirement.txt .
+RUN pip3 install --no-cache-dir -r requirement.txt
+
+COPY consumer/consumer_classifier.py .
+COPY config.py .
+COPY Model /app/
+
+
+ENV KAFKA_BROKER=kafka:9092 \
+    TOPIC_CLASSIFIED=movie-comments-classified\
+    MODEL_PATH="Model/frozen_data/ML_model.pkl"\
+    VECTORIZER_PATH="Model/frozen_data/vectoriser.pkl"
+
+
+CMD ["python", "-u", "consumer_classifier.py"]
